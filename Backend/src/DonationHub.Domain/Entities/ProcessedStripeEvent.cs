@@ -42,7 +42,7 @@ namespace DonationHub.Domain.Entities
                     Error.Validation("ProcessedStripeEvent.TypeRequired", "Event type is required."));
             }
 
-            return Result.Success(new ProcessedStripeEvent(eventId, type, processedAt));
+            return Result.Success(new ProcessedStripeEvent(eventId.Trim(), type.Trim(), processedAt));
         }
 
     }

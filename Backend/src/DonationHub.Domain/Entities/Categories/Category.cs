@@ -27,8 +27,8 @@ namespace DonationHub.Domain.Entities.Categories
 
         public string NameAr { get; private set; } = string.Empty;
         public string NameEn { get; private set; } = string.Empty;
-        public string DescriptionAr { get; private set; } = string.Empty;
-        public string DescriptionEn { get; private set; } = string.Empty;
+        public string? DescriptionAr { get; private set; } = string.Empty;
+        public string? DescriptionEn { get; private set; } = string.Empty;
         public DateTimeOffset CreatedAtUtc { get; private set; }
         public DateTimeOffset? UpdatedAtUtc { get; private set; }
 
