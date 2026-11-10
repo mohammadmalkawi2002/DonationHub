@@ -22,6 +22,9 @@
 .env.*
 !.env.example
 
+# Documentation
+/docs/
+
 # OS
 .DS_Store
 Thumbs.db
