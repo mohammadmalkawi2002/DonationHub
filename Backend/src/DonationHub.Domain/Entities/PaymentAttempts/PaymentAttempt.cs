@@ -55,7 +55,7 @@ namespace DonationHub.Domain.Entities.PaymentAttempts
                 return Result.Failure<PaymentAttempt>(
                     PaymentAttemptErrors.CheckoutSessionIdRequired);
 
-            var paymentAttempt = new PaymentAttempt(donationId, stripeCheckoutSessionId, amount, createdAtUtc);
+            var paymentAttempt = new PaymentAttempt(donationId, stripeCheckoutSessionId.Trim(), amount, createdAtUtc);
 
             return Result.Success(paymentAttempt);
         }

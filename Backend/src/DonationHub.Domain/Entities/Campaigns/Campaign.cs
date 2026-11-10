@@ -46,9 +46,9 @@ namespace DonationHub.Domain.Entities.Campaigns
 
         public string TitleEn { get; private set; } = string.Empty;
 
-        public string DescriptionAr { get; private set; } = string.Empty;
+        public string? DescriptionAr { get; private set; } = string.Empty;
 
-        public string DescriptionEn { get; private set; } = string.Empty;
+        public string? DescriptionEn { get; private set; } = string.Empty;
 
         public Money GoalAmount { get; private set; } = null!;
 
@@ -110,15 +110,15 @@ namespace DonationHub.Domain.Entities.Campaigns
             // A new campaign starts with zero raised amount.
             var raisedAmount = Money.Zero(goalAmount);
             var campaign = new Campaign(
-                titleAr,
-                titleEn,
-                descriptionAr,
-                descriptionEn,
+                titleAr.Trim(),
+                titleEn.Trim(),
+                descriptionAr.Trim(),
+                descriptionEn.Trim(),
                 goalAmount,
                 raisedAmount,
                 endDate,
                 categoryId,
-                bannerFileName,
+                bannerFileName?.Trim(),
                 createdByUserId,
                 nowUtc);
 
