@@ -63,6 +63,9 @@ namespace DonationHub.Infrastructure.Persistence.Configurations
                     .IsRequired();
             });
 
+            //global query filter to exclude soft-deleted campaigns:
+            builder.HasQueryFilter(x => !x.IsDeleted);
+
             // Configure the relationship between Campaign and Category
             builder.HasOne<Category>()
                 .WithMany()
