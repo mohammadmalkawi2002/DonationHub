@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace DonationHub.Domain.Common.Interfaces
 {
@@ -12,6 +13,18 @@ namespace DonationHub.Domain.Common.Interfaces
     {
         bool IsDeleted { get; set; }
         DateTimeOffset? DeletedAtUtc { get; set; }
+
+        public void Delete(DateTimeOffset deletedAtUtc)
+        {
+            IsDeleted = true;
+            DeletedAtUtc = deletedAtUtc;
+        }
+
+        public void Restore()
+        {
+            IsDeleted = false;
+            DeletedAtUtc = null;
+        }
 
     }
 
