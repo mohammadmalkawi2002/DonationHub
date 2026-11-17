@@ -32,17 +32,17 @@ namespace DonationHub.Domain.Entities
         {
             if (string.IsNullOrWhiteSpace(eventId))
             {
-                return Result.Failure<ProcessedStripeEvent>(
+                return Result<ProcessedStripeEvent>.Failure(
                     Error.Validation("ProcessedStripeEvent.EventIdRequired", "Event ID is required."));
             }
 
             if (string.IsNullOrWhiteSpace(type))
             {
-                return Result.Failure<ProcessedStripeEvent>(
+                return Result<ProcessedStripeEvent>.Failure(
                     Error.Validation("ProcessedStripeEvent.TypeRequired", "Event type is required."));
             }
 
-            return Result.Success(new ProcessedStripeEvent(eventId.Trim(), type.Trim(), processedAt));
+            return Result<ProcessedStripeEvent>.Success(new ProcessedStripeEvent(eventId.Trim(), type.Trim(), processedAt));
         }
 
     }

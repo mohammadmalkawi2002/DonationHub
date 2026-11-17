@@ -47,25 +47,25 @@ namespace DonationHub.Domain.Entities
         {
             if(string.IsNullOrWhiteSpace(key))
             {
-                return Result.Failure<IdempotencyRecord>(Error.Validation("IdempotencyRecord.KeyRequired", "Idempotency record key is required."));
+                return Result<IdempotencyRecord>.Failure(Error.Validation("IdempotencyRecord.KeyRequired", "Idempotency record key is required."));
             }
 
             if(userId == Guid.Empty)
             {
-                return Result.Failure<IdempotencyRecord>(Error.Validation("IdempotencyRecord.UserIdRequired", "User ID is required."));
+                return Result<IdempotencyRecord>.Failure(Error.Validation("IdempotencyRecord.UserIdRequired", "User ID is required."));
             }
             if(string.IsNullOrWhiteSpace(requestHash))
             {
-                return Result.Failure<IdempotencyRecord>(Error.Validation("IdempotencyRecord.RequestHashRequired", "Request hash is required."));
+                return Result<IdempotencyRecord>.Failure(Error.Validation("IdempotencyRecord.RequestHashRequired", "Request hash is required."));
             }
             if(string.IsNullOrWhiteSpace(responseBody))
             {
-                return Result.Failure<IdempotencyRecord>(Error.Validation("IdempotencyRecord.ResponseBodyRequired", "Response body is required."));
+                return Result<IdempotencyRecord>.Failure(Error.Validation("IdempotencyRecord.ResponseBodyRequired", "Response body is required."));
             }
 
             if(expiresAt <= createdAtUtc)
             {
-                return Result.Failure<IdempotencyRecord>(Error.Validation("IdempotencyRecord.ExpiresAtInvalid", "ExpiresAt must be greater than CreatedAtUtc."));
+                return Result<IdempotencyRecord>.Failure(Error.Validation("IdempotencyRecord.ExpiresAtInvalid", "ExpiresAt must be greater than CreatedAtUtc."));
             }
             var record = new IdempotencyRecord(
                 key.Trim(),
@@ -76,7 +76,7 @@ namespace DonationHub.Domain.Entities
                 createdAtUtc,
                 expiresAt);
 
-            return Result.Success(record);
+            return Result<IdempotencyRecord>.Success(record);
         }
     }
 }

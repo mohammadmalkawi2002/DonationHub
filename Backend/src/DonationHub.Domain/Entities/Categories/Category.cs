@@ -41,24 +41,24 @@ namespace DonationHub.Domain.Entities.Categories
         {
             if (string.IsNullOrWhiteSpace(nameAr))
             {
-                return Result.Failure<Category>(CategoryErrors.NameArRequired); 
+                return Result<Category>.Failure(CategoryErrors.NameArRequired); 
 
             }
 
             if (nameAr.Trim().Length > 100) 
             { 
-                return Result.Failure<Category>(CategoryErrors.NameArTooLong);
+                return Result<Category>.Failure(CategoryErrors.NameArTooLong);
             }
 
                 if (string.IsNullOrWhiteSpace(nameEn))
             {
-                return Result.Failure<Category>(CategoryErrors.NameEnRequired);
+                return Result<Category>.Failure(CategoryErrors.NameEnRequired);
 
             }
 
             if (nameEn.Trim().Length > 100)
             {
-                return Result.Failure<Category>(CategoryErrors.NameEnTooLong);
+                return Result<Category>.Failure(CategoryErrors.NameEnTooLong);
             }
 
             var category = new Category(
@@ -68,7 +68,7 @@ namespace DonationHub.Domain.Entities.Categories
                 descriptionEn?.Trim() ?? string.Empty,
                 createdAtUtc);
 
-            return Result.Success(category);
+            return Result<Category>.Success(category);
         }
 
         public Result Update(
