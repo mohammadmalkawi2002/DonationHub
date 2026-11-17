@@ -17,6 +17,11 @@ namespace DonationHub.Domain.Entities.Identity
                 "Validation.Failed",
                 "Token hash is required.");
 
+        public static readonly Error InvalidRevocationDate =
+    Error.Validation(
+        "RefreshToken.InvalidRevocationDate",
+        "Revocation date cannot be earlier than creation date.");
+
         public static  Error InvalidExpiration =>
             Error.Validation(
                 "Validation.Failed",

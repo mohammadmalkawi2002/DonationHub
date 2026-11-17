@@ -85,25 +85,25 @@ namespace DonationHub.Domain.Entities.Campaigns
             string? bannerFileName=null)
         {
             if (string.IsNullOrWhiteSpace(titleAr))
-                return Result.Failure<Campaign>(CampaignErrors.TitleArRequired);
+                return Result<Campaign>.Failure(CampaignErrors.TitleArRequired);
 
             if (string.IsNullOrWhiteSpace(titleEn))
-                return Result.Failure<Campaign>(CampaignErrors.TitleEnRequired);
+                return Result<Campaign>.Failure(CampaignErrors.TitleEnRequired);
 
             if (categoryId == Guid.Empty)
-                return Result.Failure<Campaign>(CampaignErrors.CategoryIdRequired);
+                return Result<Campaign>.Failure(CampaignErrors.CategoryIdRequired);
 
             // Rule 1: GoalAmount must be greater than zero.
             if (goalAmount.Amount <= 0)
             {
-                return Result.Failure<Campaign>(
+                return Result<Campaign>.Failure(
                     CampaignErrors.GoalAmountMustBePositive);
             }
 
             // Rule 2: EndDate must be in the future.
             if (endDate <= nowUtc)
             {
-                return Result.Failure<Campaign>(
+                return Result<Campaign>.Failure(
                     CampaignErrors.EndDateInPast);
             }
 
@@ -122,7 +122,7 @@ namespace DonationHub.Domain.Entities.Campaigns
                 createdByUserId,
                 nowUtc);
 
-            return Result.Success(campaign);
+            return Result<Campaign>.Success(campaign);
         }
 
         /// <summary>
@@ -246,18 +246,18 @@ namespace DonationHub.Domain.Entities.Campaigns
             // Final states cannot transition to another state.
             if (Status != CampaignStatus.Active)
             {
-                return Result.Success(false);
+                return Result<bool>.Success(false);
             }
 
             if (EndDate > nowUtc)
             {
-                return Result.Success(false);
+                return Result<bool>.Success(false);
             }
 
             Status = CampaignStatus.Expired;
             UpdatedAtUtc = nowUtc;
 
-            return Result.Success(true);
+            return Result<bool>.Success(true);
         }
 
         /// <summary>

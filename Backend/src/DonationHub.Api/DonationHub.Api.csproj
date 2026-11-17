@@ -20,8 +20,4 @@
     <ProjectReference Include="..\DonationHub.Infrastructure\DonationHub.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 </Project>

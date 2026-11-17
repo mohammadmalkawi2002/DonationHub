@@ -3,6 +3,7 @@ using DonationHub.Domain.Common;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace DonationHub.Infrastructure.Persistence.Repositories
@@ -16,6 +17,11 @@ namespace DonationHub.Infrastructure.Persistence.Repositories
         public async Task AddAsync(TEntity entity, CancellationToken ct = default)
         {
             await _dbSet.AddAsync(entity, ct);
+        }
+
+        public async Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ct = default)
+        {
+            return await _dbSet.FirstOrDefaultAsync(predicate, ct);
         }
 
         public async Task<TEntity?> GetByIdAsync(Guid id, CancellationToken ct = default)

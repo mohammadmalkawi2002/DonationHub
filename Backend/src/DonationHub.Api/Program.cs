@@ -1,6 +1,7 @@
 using DonationHub.Api;
 using DonationHub.Application;
 using DonationHub.Infrastructure;
+using DonationHub.Infrastructure.Persistence.Seed;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,11 +12,16 @@ builder.Services
     .AddApplicationServices()
     .AddInfrastructureServices(builder.Configuration);
     
-builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+
+await using (var scope = app.Services.CreateAsyncScope())
+{
+    var databaseSeeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
+    await databaseSeeder.SeedAsync();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -23,10 +29,11 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
+//Custom for the order of Midllewares:
+app.UseCoreMiddlewares(builder.Configuration);
 
 app.MapControllers();
+app.MapStaticAssets();
 
-app.Run();
+
+await app.RunAsync();

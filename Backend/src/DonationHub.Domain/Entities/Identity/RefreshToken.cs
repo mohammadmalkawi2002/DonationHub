@@ -35,6 +35,8 @@ namespace DonationHub.Domain.Entities.Identity
 
         public bool IsRevoked => RevokedAt.HasValue;
 
+        public bool IsActive(DateTimeOffset nowUtc)
+            => !IsRevoked && !IsExpired(nowUtc);
         public bool IsExpired(DateTimeOffset nowUtc)
             => ExpiresAt <= nowUtc;
 
@@ -45,12 +47,16 @@ namespace DonationHub.Domain.Entities.Identity
             DateTimeOffset createdAtUtc)
         {
             if (userId == Guid.Empty)
-                return Result.Failure<RefreshToken>(
+                return Result<RefreshToken>.Failure(
                     RefreshTokenErrors.UserIdRequired);
 
             if (string.IsNullOrWhiteSpace(tokenHash))
-                return Result.Failure<RefreshToken>(
+                return Result<RefreshToken>.Failure(
                     RefreshTokenErrors.TokenHashRequired);
+
+            if (expiresAt <= createdAtUtc)
+                return Result<RefreshToken>.Failure(
+                    RefreshTokenErrors.InvalidExpiration);
 
             var refreshToken=new RefreshToken(
                 userId,
@@ -65,6 +71,10 @@ namespace DonationHub.Domain.Entities.Identity
         {
             if (IsRevoked)
                 return Result.Failure(RefreshTokenErrors.AlreadyRevoked);
+
+            if (revokedAt < CreatedAtUtc)
+                return Result.Failure(
+                    RefreshTokenErrors.InvalidRevocationDate);
 
             if (replacedByTokenId == Guid.Empty)
                 return Result.Failure(

@@ -38,10 +38,10 @@ namespace DonationHub.Domain.ValueObjects
         public static Result<Money> Create(decimal amount, string currency) 
         { 
             if(amount<=0)
-                return Result.Failure<Money>(Error.Validation("Money.AmountMustBePositive", "Money amount must be greater than zero."));
+                return Result<Money>.Failure(Error.Validation("Money.AmountMustBePositive", "Money amount must be greater than zero."));
 
             if(!TryNormalizeCurrency(currency, out var normalizedCurrency))
-                return Result.Failure<Money>(Error.Validation("Money.InvalidCurrency", "Invalid currency code."));
+                return Result<Money>.Failure(Error.Validation("Money.InvalidCurrency", "Invalid currency code."));
             
             return Result<Money>.Success(new Money (amount, normalizedCurrency));
         }
@@ -54,10 +54,10 @@ namespace DonationHub.Domain.ValueObjects
         public Result<Money> Add(Money? other) 
         { 
             if(other is null)
-                return Result.Failure<Money>(Error.Validation("Money.NullOther", "Cannot add null Money value."));
+                return Result<Money>.Failure(Error.Validation("Money.NullOther", "Cannot add null Money value."));
 
             if(!IsSameCurrency(other))
-                return Result.Failure<Money>(
+                return Result<Money>.Failure(
                  Error.UnprocessableEntity("Money.CurrencyMismatch", "Money values must use the same currency."));
 
             var totalAmount = Amount + other.Amount;
@@ -72,7 +72,7 @@ namespace DonationHub.Domain.ValueObjects
         {
             if (other is null)
             {
-                return Result.Failure<bool>(
+                return Result<bool>.Failure(
                     Error.Validation(
                         "Money.OtherRequired",
                         "The other money value is required."));
@@ -80,13 +80,13 @@ namespace DonationHub.Domain.ValueObjects
 
             if (!IsSameCurrency(other))
             {
-                return Result.Failure<bool>(
+                return Result<bool>.Failure(
                 Error.UnprocessableEntity(
                     "Money.CurrencyMismatch",
                     "Money values must use the same currency."));
             }
 
-            return Result.Success(Amount >= other.Amount);
+            return Result<bool>.Success(Amount >= other.Amount);
         }
 
         private bool IsSameCurrency(Money? other) {

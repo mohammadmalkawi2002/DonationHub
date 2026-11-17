@@ -54,20 +54,20 @@ namespace DonationHub.Domain.Entities.Donations
         {
             ArgumentNullException.ThrowIfNull(amount);
             if (campaignId == Guid.Empty)
-                return Result.Failure<Donation>(DonationErrors.CampaignIdRequired);
+                return Result<Donation>.Failure(DonationErrors.CampaignIdRequired);
 
             if (donorUserId == Guid.Empty)
-                return Result.Failure<Donation>(DonationErrors.DonorUserIdRequired);
+                return Result<Donation>.Failure(DonationErrors.DonorUserIdRequired);
 
             if (minimumAmount <= 0 || maximumAmount < minimumAmount)
-                return Result.Failure<Donation>(DonationErrors.InvalidAmountLimits);
+                return Result<Donation>.Failure(DonationErrors.InvalidAmountLimits);
 
             if (amount.Amount < minimumAmount || amount.Amount > maximumAmount)
-                return Result.Failure<Donation>(DonationErrors.AmountOutOfRange);
+                return Result<Donation>.Failure(DonationErrors.AmountOutOfRange);
 
             var donation = new Donation(campaignId, donorUserId, amount, createdAtUtc);
 
-            return Result.Success(donation);
+            return Result<Donation>.Success(donation);
 
         }
 

@@ -48,16 +48,16 @@ namespace DonationHub.Domain.Entities.PaymentAttempts
             ArgumentNullException.ThrowIfNull(amount);
 
             if (donationId == Guid.Empty)
-                return Result.Failure<PaymentAttempt>(
+                return Result<PaymentAttempt>.Failure(
                     PaymentAttemptErrors.DonationIdRequired);
 
             if (string.IsNullOrWhiteSpace(stripeCheckoutSessionId))
-                return Result.Failure<PaymentAttempt>(
+                return Result<PaymentAttempt>.Failure(
                     PaymentAttemptErrors.CheckoutSessionIdRequired);
 
             var paymentAttempt = new PaymentAttempt(donationId, stripeCheckoutSessionId.Trim(), amount, createdAtUtc);
 
-            return Result.Success(paymentAttempt);
+            return Result<PaymentAttempt>.Success(paymentAttempt);
         }
 
 
