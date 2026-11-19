@@ -44,10 +44,10 @@ namespace DonationHub.Domain.Common.Results
         /// <summary>
         /// Handles both success and error cases using a functional style.
         /// </summary>
-        public TResult Match<TResult>(
-            Func<TResult> onSuccess,
-            Func<IReadOnlyList<Error>, TResult> onError)
-            => IsSuccess ? onSuccess() : onError(Errors);
+        //public TResult Match<TResult>(
+        //    Func<TResult> onSuccess,
+        //    Func<IReadOnlyList<Error>, TResult> onError)
+        //    => IsSuccess ? onSuccess() : onError(Errors);
 
         public static Result Success()
             => new();
@@ -112,6 +112,11 @@ namespace DonationHub.Domain.Common.Results
         public static Result<TValue> Failure(
             IEnumerable<Error> errors)
             => new(errors);
+
+        public TResult Match<TResult>(
+           Func<TResult> onSuccess,
+           Func<IReadOnlyList<Error>, TResult> onError)
+           => IsSuccess ? onSuccess() : onError(Errors);
 
         public static implicit operator Result<TValue>(
             List<Error> errors)

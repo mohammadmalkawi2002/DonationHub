@@ -1,4 +1,6 @@
-﻿using DonationHub.Api.Infrastructure;
+﻿using Asp.Versioning;
+using DonationHub.Api.Infrastructure;
+using DonationHub.Api.OpenApi.Transformers;
 using DonationHub.Api.Services;
 using DonationHub.Application.Common.Interfaces;
 using DonationHub.Application.Common.Options;
@@ -20,6 +22,7 @@ namespace DonationHub.Api
 
 
             services.AddCustomProblemDetails()
+                    .AddCustomApiVersioning()
                     .AddExceptionHandling()
                     .AddControllerWithJsonConfiguration()
                     .AddValidation()
@@ -62,6 +65,7 @@ namespace DonationHub.Api
 
                     if (!problemDetails.Extensions.ContainsKey("code"))
                         problemDetails.Extensions["code"] = DefaultCode(status, problemDetails);
+
                     if (status >= 500)
                     {
                         problemDetails.Title = "An unexpected error occurred.";
@@ -86,6 +90,42 @@ namespace DonationHub.Api
             return services;
 
         }
+
+        public static IServiceCollection AddCustomApiVersioning(this IServiceCollection services)
+        {
+
+            services.AddApiVersioning(options =>
+       {
+           options.DefaultApiVersion = new ApiVersion(1, 0);
+           options.ReportApiVersions = true;
+           options.ApiVersionReader = new UrlSegmentApiVersionReader();
+       })
+       .AddMvc()
+       .AddApiExplorer(options =>
+            {
+                options.GroupNameFormat = "'v'VVV";
+                options.SubstituteApiVersionInUrl = true;
+
+            })
+            .AddOpenApi(options => 
+            {
+                // Document information
+                options.Document.AddDocumentTransformer<VersionInfoTransformer>();
+
+                // JWT Security Scheme
+                options.Document.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
+
+                // JWT Security Requirements per operation
+                options.Document.AddOperationTransformer<BearerSecuritySchemeTransformer>();
+
+                // Enum values as strings
+                options.Document.AddSchemaTransformer<EnumSchemaTransformer>();
+            });
+
+            return services;
+        }
+
+       
 
         public static IServiceCollection AddValidation(this IServiceCollection services)
         {

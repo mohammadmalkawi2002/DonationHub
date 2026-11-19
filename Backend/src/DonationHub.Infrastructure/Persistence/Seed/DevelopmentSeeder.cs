@@ -99,6 +99,7 @@ public sealed class DevelopmentSeeder(
             user.Id);
     }
 
+   
     private async Task SeedCategoriesAsync(CancellationToken cancellationToken)
     {
         foreach (var (nameEn, nameAr) in DevelopmentCategories)

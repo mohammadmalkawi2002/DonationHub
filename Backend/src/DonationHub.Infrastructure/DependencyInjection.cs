@@ -32,6 +32,7 @@ namespace DonationHub.Infrastructure
             //========================== Register Interceptor==========================
             services.AddScoped<ISaveChangesInterceptor, SoftDeleteInterceptor>();
 
+
             //========================== Register DbContext==========================
             services.AddDbContext<AppDbContext>((sp, options) =>
             {
@@ -41,6 +42,7 @@ namespace DonationHub.Infrastructure
                     sp.GetRequiredService<ISaveChangesInterceptor>());
             });
 
+            services.AddScoped<IAppDbContext>(sp => sp.GetRequiredService<AppDbContext>());
 
 
 
