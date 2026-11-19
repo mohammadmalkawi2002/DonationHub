@@ -185,11 +185,9 @@ The API entry point and HTTP presentation layer.
 ### Clone the Repository
 
 ```bash
-git clone <REPOSITORY_URL>
+git clone https://github.com/mohammadmalkawi2002/DonationHub.git
 cd DonationHub/Backend
 ```
-
-Replace `<REPOSITORY_URL>` with the actual repository URL.
 
 <a id="configuration--user-secrets"></a>
 ## 🔐 Configuration & User Secrets
