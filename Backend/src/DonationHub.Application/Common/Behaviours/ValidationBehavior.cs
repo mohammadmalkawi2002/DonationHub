@@ -8,12 +8,14 @@ using System.Text;
 
 namespace DonationHub.Application.Common.Behaviours
 {
-    public class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators)
+    public class ValidationBehavior<TRequest, TResponse>(IValidator<TRequest>? validator=null)
         : IPipelineBehavior<TRequest, TResponse>
             where TRequest : IRequest<TResponse>
             where TResponse : IResult
     {
-        private readonly IEnumerable<IValidator<TRequest>> _validators = validators;
+
+        private readonly IValidator<TRequest>? _validator = validator;
+
 
         public async Task<TResponse> Handle(
             TRequest request,
@@ -21,11 +23,8 @@ namespace DonationHub.Application.Common.Behaviours
             CancellationToken ct)
         {
             //1 if you do not have any validator ==> stop do not complete
-
-            if (!_validators.Any())
-            {
+            if (_validator is null)
                 return await next(ct);
-            }
 
             //here: means you have validator => encapsulate the req inside a context that fluent validation understand it :
 
@@ -33,19 +32,17 @@ namespace DonationHub.Application.Common.Behaviours
 
 
             //2. execute all the validators in parallel and get the result of each validator:
-            
-            var validationResults = await Task.WhenAll(
-            _validators.Select(v =>
-                v.ValidateAsync(context, ct)));
+
+            var validationResult = await _validator.ValidateAsync(context, ct);
+
 
             //3. get all the errors from all the validators and convert them to a list of Error (custom):
-            var errors = validationResults
-                .SelectMany(result => result.Errors)
-                .Where(error => error is not null)
+            var errors = validationResult.Errors
                 .Select(error => Error.Validation(
                     code: error.PropertyName,
                     description: error.ErrorMessage))
                 .ToList();
+
 
             if (errors.Count == 0)
             {

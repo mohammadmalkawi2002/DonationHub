@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
+using System.Collections;
 using System.Diagnostics;
 
 namespace DonationHub.Api.Infrastructure;
@@ -12,6 +13,7 @@ public class GlobalExceptionHandler(
         Exception exception,
         CancellationToken cancellationToken)
     {
+       // Log the exception with the full stack trace.:
         logger.LogError(exception,
             "Unhandled exception. TraceId: {TraceId}",
             Activity.Current?.Id ?? httpContext.TraceIdentifier);

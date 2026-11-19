@@ -9,8 +9,8 @@ namespace DonationHub.Domain.Entities.Categories
         private Category(
             string nameAr,
             string nameEn,
-            string descriptionAr,
-            string descriptionEn,
+            string? descriptionAr,
+            string ?descriptionEn,
             DateTimeOffset createdAtUtc)
         {
             NameAr = nameAr;
@@ -24,6 +24,7 @@ namespace DonationHub.Domain.Entities.Categories
         private Category()
         {
         }
+        public const int MaxNameLength = 100;
 
         public string NameAr { get; private set; } = string.Empty;
         public string NameEn { get; private set; } = string.Empty;
@@ -39,33 +40,15 @@ namespace DonationHub.Domain.Entities.Categories
             string? descriptionEn,
             DateTimeOffset createdAtUtc)
         {
-            if (string.IsNullOrWhiteSpace(nameAr))
-            {
-                return Result<Category>.Failure(CategoryErrors.NameArRequired); 
-
-            }
-
-            if (nameAr.Trim().Length > 100) 
-            { 
-                return Result<Category>.Failure(CategoryErrors.NameArTooLong);
-            }
-
-                if (string.IsNullOrWhiteSpace(nameEn))
-            {
-                return Result<Category>.Failure(CategoryErrors.NameEnRequired);
-
-            }
-
-            if (nameEn.Trim().Length > 100)
-            {
-                return Result<Category>.Failure(CategoryErrors.NameEnTooLong);
-            }
+            var validation = ValidateNames(nameAr, nameEn);
+            if (validation.IsError)
+                return Result<Category>.Failure(validation.Errors);
 
             var category = new Category(
-                nameAr.Trim(),
-                nameEn.Trim(),
-                descriptionAr?.Trim() ?? string.Empty,
-                descriptionEn?.Trim() ?? string.Empty,
+                nameAr!.Trim(),
+                nameEn!.Trim(),
+                Normalize(descriptionAr),
+                Normalize(descriptionEn),
                 createdAtUtc);
 
             return Result<Category>.Success(category);
@@ -78,36 +61,38 @@ namespace DonationHub.Domain.Entities.Categories
             string? descriptionEn,
             DateTimeOffset updatedAtUtc)
         {
-            if (string.IsNullOrWhiteSpace(nameAr))
-            {
-                return Result.Failure(CategoryErrors.NameArRequired);
+            var validation = ValidateNames(nameAr, nameEn);
 
-            }
-
-            if (nameAr.Trim().Length > 100)
-            {
-                return Result.Failure(CategoryErrors.NameArTooLong);
-            }
-
-            if (string.IsNullOrWhiteSpace(nameEn))
-            {
-                return Result.Failure(CategoryErrors.NameEnRequired);
-
-            }
-
-            if (nameEn.Trim().Length > 100)
-            {
-                return Result.Failure(CategoryErrors.NameEnTooLong);
-            }
+            if (validation.IsError)
+                return validation;
 
             NameAr = nameAr!.Trim();
             NameEn = nameEn!.Trim();
-            DescriptionAr = descriptionAr?.Trim() ?? string.Empty;
-            DescriptionEn = descriptionEn?.Trim() ?? string.Empty;
+            DescriptionAr = Normalize(descriptionAr);
+            DescriptionEn = Normalize(descriptionEn);
             UpdatedAtUtc = updatedAtUtc;
 
             return Result.Success();
         }
 
+        private static Result ValidateNames(string? nameAr, string? nameEn)
+        {
+            if (string.IsNullOrWhiteSpace(nameAr)) 
+                return Result.Failure(CategoryErrors.NameArRequired);
+            if (nameAr.Trim().Length > MaxNameLength) return Result.Failure(CategoryErrors.NameArTooLong);
+            if (string.IsNullOrWhiteSpace(nameEn)) return Result.Failure(CategoryErrors.NameEnRequired);
+            if (nameEn.Trim().Length > MaxNameLength) return Result.Failure(CategoryErrors.NameEnTooLong);
+            return Result.Success();
+        }
+
+        public Result CanDeleteCategory(bool hasCampaigns)
+        {
+            if (hasCampaigns)
+                return Result.Failure(CategoryErrors.HasCampaigns);
+
+            return Result.Success();
+        }
+        private static string? Normalize(string? value)
+    => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
     }
 }

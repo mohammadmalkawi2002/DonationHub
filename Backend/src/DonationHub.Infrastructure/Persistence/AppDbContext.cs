@@ -1,4 +1,5 @@
 ﻿
+using DonationHub.Application.Common.Interfaces;
 using DonationHub.Domain.Entities;
 using DonationHub.Domain.Entities.Campaigns;
 using DonationHub.Domain.Entities.Categories;
@@ -14,7 +15,7 @@ using System.Reflection.Emit;
 namespace DonationHub.Infrastructure.Persistence
 {
     public sealed class AppDbContext(DbContextOptions<AppDbContext> options)
-        :  IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>(options)
+        :  IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>(options),IAppDbContext
     {
         public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 

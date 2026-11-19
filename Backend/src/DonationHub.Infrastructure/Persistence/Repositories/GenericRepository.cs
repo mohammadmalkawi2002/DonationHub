@@ -19,6 +19,16 @@ namespace DonationHub.Infrastructure.Persistence.Repositories
             await _dbSet.AddAsync(entity, ct);
         }
 
+        public async Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ct = default, bool ignoreQueryFilters = false)
+        {
+            var query = _dbSet.AsQueryable();
+
+            if (ignoreQueryFilters)
+                query = query.IgnoreQueryFilters();
+
+            return await query.AnyAsync(predicate, ct);
+        }
+
         public async Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ct = default)
         {
             return await _dbSet.FirstOrDefaultAsync(predicate, ct);
